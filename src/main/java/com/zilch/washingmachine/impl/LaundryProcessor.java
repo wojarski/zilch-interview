@@ -18,7 +18,7 @@ public class LaundryProcessor {
     StageRepository stageRepository;
 
     public UUID run(AbstractProgram program) {
-        AbstractStage stage = program.getStages().get(0);
+        AbstractStage stage = program.getStages().getFirst();
 
         Laundry laundry = null;
 
