@@ -21,7 +21,17 @@ public class WashStage extends AbstractStage {
     }
 
     @Override
+    public List<SubStageType> getSubStages() {
+        return List.of(SubStageType.SPIN, SubStageType.IDLE);
+    }
+
+    @Override
     public List<StageType> getAllowedPredecessors() {
         return List.of(StageType.SOAK, StageType.RINSE);
+    }
+
+    @Override
+    public boolean canPause() {
+        return false;
     }
 }

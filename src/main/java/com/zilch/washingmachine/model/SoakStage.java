@@ -41,8 +41,4 @@ public class SoakStage extends AbstractStage {
         return false;
     }
 
-    @Override
-    public void run() {
-        log.info("Puring water");
-    }
 }

@@ -4,8 +4,6 @@ import com.zilch.washingmachine.model.AbstractStage;
 
 public class StageProcessor {
     public void run(AbstractStage stage) {
-        stage.getSubStages().getFirst()
+        stage.getSubStages().get(0);
     }
-
-
 }

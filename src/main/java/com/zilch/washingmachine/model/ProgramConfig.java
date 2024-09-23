@@ -9,6 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class ProgramConfig {
-    Map<StageType, Map<String, >> stageConfig;
-    Map<SubStageType> subStageConfig;
+    Map<StageType, Map<String, String>> stageConfig;
+    Map<SubStageType, Map<String, String>> subStageConfig;
 }

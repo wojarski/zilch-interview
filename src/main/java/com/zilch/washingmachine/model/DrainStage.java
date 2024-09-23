@@ -20,6 +20,11 @@ public class DrainStage extends AbstractStage {
     }
 
     @Override
+    public List<SubStageType> getSubStages() {
+        return List.of(SubStageType.SPIN, SubStageType.PUMP);
+    }
+
+    @Override
     public List<StageType> getAllowedPredecessors() {
         return List.of(StageType.SOAK, StageType.WASH);
     }
@@ -29,8 +34,4 @@ public class DrainStage extends AbstractStage {
         return false;
     }
 
-    @Override
-    public void run() {
-
-    }
 }
