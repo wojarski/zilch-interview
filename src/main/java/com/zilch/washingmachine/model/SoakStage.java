@@ -1,8 +1,6 @@
 package com.zilch.washingmachine.model;
 
 import com.zilch.washingmachine.DeviceFacade;
-import com.zilch.washingmachine.model.AbstractStage;
-import com.zilch.washingmachine.model.StageType;
 import java.time.Duration;
 import java.util.List;
 import lombok.AllArgsConstructor;

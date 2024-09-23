@@ -1,10 +1,9 @@
 package com.zilch.washingmachine.predefined;
 
+import com.zilch.washingmachine.model.AbstractStage;
 import com.zilch.washingmachine.model.DrainStage;
 import com.zilch.washingmachine.model.RinseStage;
 import com.zilch.washingmachine.model.WashStage;
-import com.zilch.washingmachine.model.AbstractStage;
-import com.zilch.washingmachine.model.Laundry;
 import java.time.Duration;
 import java.util.List;
 
