@@ -1,5 +1,7 @@
-package com.zilch.washingmachine.model;
+package com.zilch.washingmachine.program;
 
+import com.zilch.washingmachine.model.SubStageType;
+import com.zilch.washingmachine.model.StageType;
 import java.time.Duration;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -9,18 +11,17 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class RinseStage extends AbstractStage {
-
+public class DrainStage extends AbstractStage {
     Duration duration;
 
     @Override
     public StageType getType() {
-        return StageType.RINSE;
+        return StageType.DRAIN;
     }
 
     @Override
     public List<SubStageType> getSubStages() {
-        return null;
+        return List.of(SubStageType.SPIN, SubStageType.PUMP);
     }
 
     @Override
@@ -32,4 +33,5 @@ public class RinseStage extends AbstractStage {
     public boolean canPause() {
         return false;
     }
+
 }

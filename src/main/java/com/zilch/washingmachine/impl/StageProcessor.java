@@ -1,6 +1,6 @@
 package com.zilch.washingmachine.impl;
 
-import com.zilch.washingmachine.model.AbstractStage;
+import com.zilch.washingmachine.program.AbstractStage;
 
 public class StageProcessor {
     public void run(AbstractStage stage) {

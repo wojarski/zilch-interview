@@ -4,11 +4,16 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Builder
 @AllArgsConstructor
 @Getter
+@Setter
 public class ProgramConfig {
-    Map<StageType, Map<String, String>> stageConfig;
-    Map<SubStageType, Map<String, String>> subStageConfig;
+    public enum ConfigType {
+        DURATION, REPEATS, TEMPERATURE
+    }
+    Map<StageType, Map<ConfigType, String>> stageConfig;
+    Map<SubStageType, Map<ConfigType, String>> subStageConfig;
 }

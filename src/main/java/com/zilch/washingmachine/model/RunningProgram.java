@@ -1,5 +1,6 @@
 package com.zilch.washingmachine.model;
 
+import com.zilch.washingmachine.program.AbstractStage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
