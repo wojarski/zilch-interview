@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 @Setter
 @Builder
+@SuppressWarnings("unused")
 public class ProgramEvent extends ApplicationEvent {
     private ProgramEventType programEventType;
     private StageType stageType;
