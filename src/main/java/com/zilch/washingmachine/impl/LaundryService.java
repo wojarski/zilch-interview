@@ -12,7 +12,6 @@ import com.zilch.washingmachine.persistence.StageMapper;
 import com.zilch.washingmachine.persistence.StageRepository;
 import com.zilch.washingmachine.program.LaundryFactory;
 import com.zilch.washingmachine.program.stage.AbstractStage;
-import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -63,19 +60,12 @@ public class LaundryService {
         return new Operation(OperationStatus.SUCCESS, laundry.getId());
     }
 
-
     @TransactionalEventListener
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void doAfterCommit(ApplicationEvent event){
-        log.info("before commit!");
-
-        //deviceFacade.pourWater();
-
-        // entity.setCompleted(true);
-        // deviceOutboxRepository.save(entity);
+        // TODO but it doesn't :(
+        log.info("after commit works");
     }
 
-    @SuppressWarnings("all")
     public Operation continueLaundry(UUID laundryId) {
         return laundryRepository.findById(laundryId).map(LaundryMapper.INSTANCE::mapFromEntity)
                 .map(this::continueLaundry0)
@@ -83,7 +73,6 @@ public class LaundryService {
                            String.format("Could not find laundry object for id %s", laundryId)));
     }
 
-    @SuppressWarnings("all")
     public Operation continueLaundry(String serialNumber) {
         return laundryRepository.findByDeviceSerialNumber(serialNumber)
                 .map(LaundryMapper.INSTANCE::mapFromEntity)
@@ -93,31 +82,45 @@ public class LaundryService {
     }
 
     private Operation continueLaundry0(Laundry laundry) {
-        AbstractStage stage = laundry.getStage();
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                deviceOutboxService.performActions();
+            }
+        });
         ProgramConfig config = laundry.getProgram().getProgramConfig();
+        Optional<AbstractStage> oStageToRun = getStage(laundry);
+
+        if (oStageToRun.isEmpty()) {
+            return new Operation(OperationStatus.SUCCESS, laundry.getId(), String.format("Laundry %s finished", laundry.getId()));
+        } else {
+            stageProcessor.run(oStageToRun.get(), config);
+
+            laundryRepository.save(LaundryMapper.INSTANCE.mapToEntity(laundry));
+            stageRepository.save(StageMapper.INSTANCE.mapToEntity(oStageToRun.get().getStage()));
+            // TODO persist StageActivity
+
+            return new Operation(OperationStatus.SUCCESS, laundry.getId(), String.format("Carry on %s", laundry.getId()));
+        }
+    }
+
+    private Optional<AbstractStage> getStage(Laundry laundry) {
+        AbstractStage stage = laundry.getStage();
 
         if (isFinished(stage)) {
             List<Stage> stages = new ArrayList<>(laundry.getProcessedStages());
             stages.add(stage.getStage());
             laundry.setProcessedStages(stages);
         } else {
-            stageProcessor.run(stage, config);
+            return Optional.of(stage);
         }
 
         Optional<AbstractStage> oNextStage = findNextStage(laundry);
-        if (oNextStage.isEmpty()) {
-            return new Operation(OperationStatus.SUCCESS, null, String.format("Laundry %s finished", laundry.getId()));
-        }
-
-        AbstractStage nextStage = oNextStage.get();
-        nextStage.setStage(laundryFactory.newStage(nextStage, laundry.getId()));
-        laundry.setStage(nextStage);
-        stageProcessor.run(nextStage, config);
-
-        laundryRepository.save(LaundryMapper.INSTANCE.mapToEntity(laundry));
-        stageRepository.save(StageMapper.INSTANCE.mapToEntity(stage.getStage()));
-
-        return new Operation(OperationStatus.SUCCESS, laundry.getId());
+        oNextStage.ifPresent(nextStage -> {
+            stage.setStage(laundryFactory.newStage(nextStage, laundry.getId()));
+            laundry.setStage(nextStage);
+        });
+        return oNextStage;
     }
 
     private boolean isFinished(AbstractStage stage) {
