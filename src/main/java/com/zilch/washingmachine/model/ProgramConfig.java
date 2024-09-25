@@ -12,9 +12,12 @@ import lombok.Setter;
 @Setter
 public class ProgramConfig {
     public enum ConfigType {
-        DURATION, REPEATS, TEMPERATURE
+        DURATION, MAX_DURATION, REPEATS, TEMPERATURE
     }
+
     private Map<StageType, Map<ConfigType, String>> stageConfig;
+
+    // TODO not clear to which stage apply activity config
     private Map<StageActivityType, Map<ConfigType, String>> stageActivityConfig;
 
     public String getValue(StageActivityType stageActivityType, ConfigType configType) {

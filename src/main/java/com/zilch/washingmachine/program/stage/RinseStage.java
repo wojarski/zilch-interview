@@ -1,8 +1,15 @@
 package com.zilch.washingmachine.program.stage;
 
+import static com.zilch.washingmachine.model.ProgramConfig.ConfigType.REPEATS;
+import static com.zilch.washingmachine.model.StageActivityType.POUR_WATER;
+import static com.zilch.washingmachine.model.StageActivityType.PUMP;
+import static com.zilch.washingmachine.model.StageActivityType.SPIN;
+
+import com.zilch.washingmachine.model.ProgramConfig;
 import com.zilch.washingmachine.model.StageActivityType;
 import com.zilch.washingmachine.model.StageType;
 import java.util.List;
+import java.util.stream.IntStream;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,12 +24,19 @@ public class RinseStage extends AbstractStage {
     }
 
     @Override
-    public List<StageActivityType> getSubStages() {
-        return null;
+    public List<StageActivityType> getActivities() {
+        return List.of(POUR_WATER, SPIN, PUMP);
     }
 
     @Override
     public List<StageType> getAllowedPredecessors() {
         return List.of(StageType.SOAK, StageType.WASH);
+    }
+
+    @Override
+    public List<StageActivityType> getEffectiveActivities(ProgramConfig config) {
+        int repeats = Integer.parseInt(config.getValue(StageType.RINSE, REPEATS));
+
+        return IntStream.range(0, repeats).mapToObj(index -> List.of(POUR_WATER, SPIN, PUMP)).flatMap(List::stream).toList();
     }
 }

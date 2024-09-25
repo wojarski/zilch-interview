@@ -19,6 +19,6 @@ public interface LaundryEndpoint {
     // TODO query paremeters & args
     UUID runECOLaundry();
 
-    @GetMapping("/getAll")
+    @GetMapping("/getAllLaundries")
     List<Laundry> getAllLaundries();
 }

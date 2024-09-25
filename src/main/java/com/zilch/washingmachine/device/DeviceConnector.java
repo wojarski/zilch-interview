@@ -2,7 +2,7 @@ package com.zilch.washingmachine.device;
 
 import com.zilch.washingmachine.persistence.model.DeviceState;
 
-interface DeviceConnector {
+public interface DeviceConnector {
     String getSerialNumber();
     DeviceState getDeviceState();
     void openWaterValve();
@@ -13,6 +13,6 @@ interface DeviceConnector {
     void engineOff();
     void pumpOn();
     void pumpOff();
-    void abortAny();
+    void abortAll();
     boolean isWaterFull();
 }

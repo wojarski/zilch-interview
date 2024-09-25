@@ -19,7 +19,7 @@ public class SoakStage extends AbstractStage {
     }
 
     @Override
-    public List<StageActivityType> getSubStages() {
+    public List<StageActivityType> getActivities() {
         return List.of(StageActivityType.POUR_WATER, StageActivityType.IDLE);
     }
 

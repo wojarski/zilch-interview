@@ -1,8 +1,8 @@
 package com.zilch.washingmachine.device;
 
-import com.zilch.washingmachine.impl.LaundryService;
-import com.zilch.washingmachine.persistence.model.DeviceEvent;
-import com.zilch.washingmachine.persistence.model.DeviceEventType;
+import com.zilch.washingmachine.impl.EventPublisher;
+import com.zilch.washingmachine.model.DeviceEvent;
+import com.zilch.washingmachine.model.DeviceEventType;
 import com.zilch.washingmachine.persistence.model.DeviceState;
 import java.time.Clock;
 import java.time.Duration;
@@ -23,7 +23,7 @@ public class DeviceFacadeImpl implements DeviceFacade {
     DeviceConnector deviceConnector;
 
     @Autowired
-    DeviceEventPublisher deviceEventPublisher;
+    EventPublisher eventPublisher;
 
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
@@ -53,7 +53,7 @@ public class DeviceFacadeImpl implements DeviceFacade {
 
     @Override
     public void idle(Duration duration) {
-        deviceConnector.abortAny();
+        deviceConnector.abortAll();
         String serialNumber = deviceConnector.getSerialNumber();
 
         scheduler.schedule(() -> idleElapsed(serialNumber), duration.toSeconds(), TimeUnit.SECONDS);
@@ -69,17 +69,13 @@ public class DeviceFacadeImpl implements DeviceFacade {
 
     }
 
-    @Override
-    public boolean isWaterFull() {
-        return deviceConnector.isWaterFull();
-    }
-
     private void stopSpin() {
         deviceConnector.engineOff();
     }
 
+    // TODO I don't like it here
     private void idleElapsed(String serialNumber) {
-        deviceEventPublisher.publishDevcieEvent(DeviceEvent.builder()
+        eventPublisher.publishDeviceEvent(DeviceEvent.builder()
                                                         .deviceSerialNumber(serialNumber)
                                                         .eventType(DeviceEventType.IDLE_ELAPSED)
                                                         .build());

@@ -4,25 +4,33 @@ import com.zilch.washingmachine.model.Laundry;
 import com.zilch.washingmachine.model.Operation;
 import com.zilch.washingmachine.model.OperationStatus;
 import com.zilch.washingmachine.model.ProgramConfig;
+import com.zilch.washingmachine.model.Stage;
 import com.zilch.washingmachine.model.StageType;
 import com.zilch.washingmachine.persistence.LaundryMapper;
 import com.zilch.washingmachine.persistence.LaundryRepository;
 import com.zilch.washingmachine.persistence.StageMapper;
 import com.zilch.washingmachine.persistence.StageRepository;
-import com.zilch.washingmachine.persistence.model.LaundryEntity;
-import com.zilch.washingmachine.program.stage.AbstractStage;
 import com.zilch.washingmachine.program.LaundryFactory;
-import java.time.Clock;
+import com.zilch.washingmachine.program.stage.AbstractStage;
+import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Component;
-import com.zilch.washingmachine.model.Stage;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Component
+@Slf4j
 @Transactional
 public class LaundryService {
     @Autowired
@@ -33,8 +41,16 @@ public class LaundryService {
     private LaundryRepository laundryRepository;
     @Autowired
     private StageRepository stageRepository;
+    @Autowired
+    private DeviceOutboxService deviceOutboxService;
 
     public Operation startNewLaundry(Laundry laundry) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                deviceOutboxService.performActions();
+            }
+        });
         validate(laundry);
 
         AbstractStage stage = laundry.getStage();
@@ -47,16 +63,36 @@ public class LaundryService {
         return new Operation(OperationStatus.SUCCESS, laundry.getId());
     }
 
+
+    @TransactionalEventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void doAfterCommit(ApplicationEvent event){
+        log.info("before commit!");
+
+        //deviceFacade.pourWater();
+
+        // entity.setCompleted(true);
+        // deviceOutboxRepository.save(entity);
+    }
+
+    @SuppressWarnings("all")
+    public Operation continueLaundry(UUID laundryId) {
+        return laundryRepository.findById(laundryId).map(LaundryMapper.INSTANCE::mapFromEntity)
+                .map(this::continueLaundry0)
+                .orElseGet(() -> new Operation(OperationStatus.FAILURE, null,
+                           String.format("Could not find laundry object for id %s", laundryId)));
+    }
+
+    @SuppressWarnings("all")
     public Operation continueLaundry(String serialNumber) {
-        Optional<LaundryEntity> oLaundry = laundryRepository.findByDeviceSerialNumber(serialNumber);
+        return laundryRepository.findByDeviceSerialNumber(serialNumber)
+                .map(LaundryMapper.INSTANCE::mapFromEntity)
+                .map(this::continueLaundry0)
+                .orElseGet(() -> new Operation(OperationStatus.FAILURE, null,
+                           String.format("Could not find laundry object for device %s", serialNumber)));
+    }
 
-        if (oLaundry.isEmpty()) {
-            return new Operation(OperationStatus.FAILURE, null,
-                                 String.format("Could not find laundry object for device %s", serialNumber));
-        }
-
-        Laundry laundry = LaundryMapper.INSTANCE.mapFromEntity(oLaundry.get());
-
+    private Operation continueLaundry0(Laundry laundry) {
         AbstractStage stage = laundry.getStage();
         ProgramConfig config = laundry.getProgram().getProgramConfig();
 

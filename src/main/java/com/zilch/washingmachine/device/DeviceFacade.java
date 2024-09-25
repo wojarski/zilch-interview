@@ -5,8 +5,6 @@ import java.time.Duration;
 public interface DeviceFacade {
     void pourWater();
 
-    boolean isWaterFull();
-
     void heatUp(double temperature);
 
     void spin(Duration duration);

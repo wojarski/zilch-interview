@@ -8,7 +8,6 @@ import com.zilch.washingmachine.model.Stage;
 import com.zilch.washingmachine.model.StageType;
 import com.zilch.washingmachine.model.StageActivity;
 import com.zilch.washingmachine.model.StageActivityType;
-import com.zilch.washingmachine.persistence.model.DeviceState;
 import com.zilch.washingmachine.program.stage.AbstractStage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,18 +36,18 @@ public class LaundryFactory {
     }
 
     public Stage newStage(AbstractStage stage, UUID laundryId) {
-        StageActivityType subStageType = stage.getSubStages().getFirst();
+        StageActivityType subStageType = stage.getActivities().getFirst();
         UUID stageId = UUID.randomUUID();
         return Stage.builder()
                 .id(stageId)
                 .laundryId(laundryId)
                 .type(stage.getType())
-                .activity(newSubStage(subStageType, stageId))
+                .activity(newStageActivity(subStageType, stageId))
                 .processedActivities(new ArrayList<>())
                 .build();
     }
 
-    public StageActivity newSubStage(StageActivityType type, UUID stageId) {
+    public StageActivity newStageActivity(StageActivityType type, UUID stageId) {
         return StageActivity.builder()
                 .id(UUID.randomUUID())
                 .stageId(stageId)
