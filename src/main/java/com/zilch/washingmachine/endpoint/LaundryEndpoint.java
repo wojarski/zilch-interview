@@ -11,4 +11,10 @@ public interface LaundryEndpoint {
     // TODO check permissions
     // TODO query paremeters & args
     UUID runQuickLaundry();
+
+    @POST
+    @Path("/ECOLaundry")
+    // TODO check permissions
+    // TODO query paremeters & args
+    UUID runECOLaundry();
 }

@@ -1,6 +1,6 @@
 package com.zilch.washingmachine.persistence;
 
-import com.zilch.washingmachine.model.stage.Stage;
+import com.zilch.washingmachine.model.Stage;
 import com.zilch.washingmachine.persistence.model.StageEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

@@ -1,27 +1,24 @@
-package com.zilch.washingmachine.model;
+package com.zilch.washingmachine.program;
 
-import com.zilch.washingmachine.program.AbstractStage;
-import java.time.Duration;
+import com.zilch.washingmachine.model.StageActivityType;
+import com.zilch.washingmachine.model.StageType;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class WashStage extends AbstractStage {
-    Duration duration;
-    Integer repeats;
-
     @Override
     public StageType getType() {
         return StageType.WASH;
     }
 
     @Override
-    public List<SubStageType> getSubStages() {
-        return List.of(SubStageType.SPIN, SubStageType.IDLE);
+    public List<StageActivityType> getSubStages() {
+        return List.of(StageActivityType.SPIN, StageActivityType.IDLE);
     }
 
     @Override

@@ -15,5 +15,9 @@ public class ProgramConfig {
         DURATION, REPEATS, TEMPERATURE
     }
     Map<StageType, Map<ConfigType, String>> stageConfig;
-    Map<SubStageType, Map<ConfigType, String>> subStageConfig;
+    Map<StageActivityType, Map<ConfigType, String>> subStageConfig;
+
+//    public String getSubStageConfig(SubStageType subStageType, ConfigType configType) {
+//
+//    }
 }

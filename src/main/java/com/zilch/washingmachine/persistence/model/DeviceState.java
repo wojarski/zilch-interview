@@ -18,7 +18,7 @@ public class DeviceState {
     private boolean balanced;
     private boolean waterIn;
     private boolean powderIn;
-    private int waterTemperature;
+    private double waterTemperature;
     private boolean empty;
     private List<DeviceError> errors;
 }
