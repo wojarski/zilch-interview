@@ -9,24 +9,22 @@ import com.zilch.washingmachine.persistence.LaundryMapper;
 import com.zilch.washingmachine.persistence.LaundryRepository;
 import com.zilch.washingmachine.persistence.StageMapper;
 import com.zilch.washingmachine.persistence.StageRepository;
-import com.zilch.washingmachine.persistence.model.DeviceEvent;
 import com.zilch.washingmachine.persistence.model.LaundryEntity;
-import com.zilch.washingmachine.program.AbstractStage;
+import com.zilch.washingmachine.program.stage.AbstractStage;
 import com.zilch.washingmachine.program.LaundryFactory;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.zilch.washingmachine.model.Stage;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Transactional
 public class LaundryService {
-    @Autowired
-    private Clock clock;
     @Autowired
     private LaundryFactory laundryFactory;
     @Autowired
@@ -107,4 +105,7 @@ public class LaundryService {
 
     }
 
+    public List<Laundry> listAllLaundries() {
+        return laundryRepository.findAll().stream().map(LaundryMapper.INSTANCE::mapFromEntity).toList();
+    }
 }

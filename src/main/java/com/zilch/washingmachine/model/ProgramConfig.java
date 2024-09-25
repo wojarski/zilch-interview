@@ -14,10 +14,14 @@ public class ProgramConfig {
     public enum ConfigType {
         DURATION, REPEATS, TEMPERATURE
     }
-    Map<StageType, Map<ConfigType, String>> stageConfig;
-    Map<StageActivityType, Map<ConfigType, String>> subStageConfig;
+    private Map<StageType, Map<ConfigType, String>> stageConfig;
+    private Map<StageActivityType, Map<ConfigType, String>> stageActivityConfig;
 
-//    public String getSubStageConfig(SubStageType subStageType, ConfigType configType) {
-//
-//    }
+    public String getValue(StageActivityType stageActivityType, ConfigType configType) {
+        return stageActivityConfig.get(stageActivityType).get(configType);
+    }
+
+    public String getValue(StageType stageType, ConfigType configType) {
+        return stageConfig.get(stageType).get(configType);
+    }
 }

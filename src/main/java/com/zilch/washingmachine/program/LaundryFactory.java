@@ -1,5 +1,6 @@
 package com.zilch.washingmachine.program;
 
+import com.zilch.washingmachine.device.DummyDeviceConnector;
 import com.zilch.washingmachine.model.Laundry;
 import com.zilch.washingmachine.model.ProgramConfig;
 import com.zilch.washingmachine.model.ProgramConfig.ConfigType;
@@ -7,7 +8,10 @@ import com.zilch.washingmachine.model.Stage;
 import com.zilch.washingmachine.model.StageType;
 import com.zilch.washingmachine.model.StageActivity;
 import com.zilch.washingmachine.model.StageActivityType;
+import com.zilch.washingmachine.persistence.model.DeviceState;
+import com.zilch.washingmachine.program.stage.AbstractStage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -15,9 +19,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class LaundryFactory {
     public Laundry newLaundry(AbstractProgram program, ProgramConfig userConfig) {
-        AbstractStage abstractStage = program.getStages().getFirst();
+        AbstractStage stage = program.getStages().getFirst();
         UUID laundryId = UUID.randomUUID();
-        AbstractStage stage = abstractStage.toBuilder().stage(newStage(abstractStage, laundryId)).build();
+        stage.setStage(newStage(stage, laundryId));
 
         ProgramConfig defaultConfig = program.getProgramDefaultConfig();
         ProgramConfig config = configure(defaultConfig, userConfig);
@@ -28,6 +32,7 @@ public class LaundryFactory {
                 .program(program)
                 .stage(stage)
                 .processedStages(new ArrayList<>())
+                .deviceSerialNumber(DummyDeviceConnector.DEFAULT_SERIAL_NUMBER)
                 .build();
     }
 
@@ -55,14 +60,23 @@ public class LaundryFactory {
         Map<StageType, Map<ConfigType, String>> config = defaultConfig.getStageConfig();
 
         config.keySet().forEach(stageType -> {
-            config.merge(stageType, userConfig.getStageConfig().get(stageType), (defaultStageConfig, userStageConfig) -> {
-                defaultStageConfig.keySet().forEach(configType -> {
-                    defaultStageConfig.merge(configType, userStageConfig.get(configType), (defaultConfigValue, userConfigValue) -> defaultConfigValue);
+            if (userConfig.getStageConfig().get(stageType) != null) {
+                config.merge(stageType, userConfig.getStageConfig().get(stageType), (defaultStageConfig, userStageConfig) -> {
+                    defaultStageConfig.keySet().forEach(configType -> {
+                        defaultStageConfig.merge(configType, userStageConfig.get(configType), (defaultConfigValue, userConfigValue) -> defaultConfigValue);
+                    });
+                    return defaultStageConfig;
                 });
-                return defaultStageConfig;
-            });
+            }
         });
 
         return defaultConfig;
+    }
+
+    public static ProgramConfig getDefaultUserConfig() {
+        return ProgramConfig.builder()
+                .stageConfig(new HashMap<>())
+                .stageActivityConfig(new HashMap<>())
+                .build();
     }
 }

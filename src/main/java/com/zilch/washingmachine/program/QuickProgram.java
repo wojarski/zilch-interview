@@ -4,6 +4,10 @@ import com.zilch.washingmachine.model.ProgramConfig;
 import com.zilch.washingmachine.model.ProgramConfig.ConfigType;
 import com.zilch.washingmachine.model.StageType;
 import com.zilch.washingmachine.model.StageActivityType;
+import com.zilch.washingmachine.program.stage.AbstractStage;
+import com.zilch.washingmachine.program.stage.DrainStage;
+import com.zilch.washingmachine.program.stage.RinseStage;
+import com.zilch.washingmachine.program.stage.WashStage;
 import java.util.List;
 import java.util.Map;
 import lombok.Builder;
@@ -32,7 +36,7 @@ public class QuickProgram extends AbstractProgram {
                         StageType.WASH, Map.of(ConfigType.DURATION, "10"),
                         StageType.RINSE, Map.of(ConfigType.DURATION, "10"),
                         StageType.DRAIN, Map.of(ConfigType.DURATION, "10")))
-                .subStageConfig(Map.of(StageActivityType.HEAT_UP, Map.of(ConfigType.TEMPERATURE, null)))
+                .stageActivityConfig(Map.of(StageActivityType.HEAT_UP, Map.of(ConfigType.TEMPERATURE, "40")))
                 .build();
     }
 }

@@ -2,12 +2,14 @@ package com.zilch.washingmachine.persistence.model;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeviceState {
@@ -21,4 +23,5 @@ public class DeviceState {
     private double waterTemperature;
     private boolean empty;
     private List<DeviceError> errors;
+    private String serialNumber;
 }

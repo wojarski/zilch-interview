@@ -1,7 +1,7 @@
 package com.zilch.washingmachine.model;
 
 import com.zilch.washingmachine.program.AbstractProgram;
-import com.zilch.washingmachine.program.AbstractStage;
+import com.zilch.washingmachine.program.stage.AbstractStage;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;

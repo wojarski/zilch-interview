@@ -1,7 +1,7 @@
 package com.zilch.washingmachine.model;
 
+import jakarta.persistence.Id;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -15,9 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Stage {
-    @Setter(AccessLevel.NONE)
     private UUID id;
-    @Setter(AccessLevel.NONE)
     private UUID laundryId;
     private StageType type;
     private StageActivity activity;

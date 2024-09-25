@@ -1,20 +1,24 @@
 package com.zilch.washingmachine.endpoint;
 
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
+import com.zilch.washingmachine.model.Laundry;
+import java.util.List;
 import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Path("laundry")
+@RestController
+
 public interface LaundryEndpoint {
-    @POST
-    @Path("/quickLaundry")
+    @GetMapping("/quickLaundry")
     // TODO check permissions
     // TODO query paremeters & args
     UUID runQuickLaundry();
 
-    @POST
-    @Path("/ECOLaundry")
+    @GetMapping("/ECOLaundry")
     // TODO check permissions
     // TODO query paremeters & args
     UUID runECOLaundry();
+
+    @GetMapping("/getAll")
+    List<Laundry> getAllLaundries();
 }

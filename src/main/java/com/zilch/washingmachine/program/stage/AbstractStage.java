@@ -1,4 +1,4 @@
-package com.zilch.washingmachine.program;
+package com.zilch.washingmachine.program.stage;
 
 import com.zilch.washingmachine.model.Stage;
 import com.zilch.washingmachine.model.StageType;
@@ -12,7 +12,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class AbstractStage {
@@ -20,7 +19,4 @@ public abstract class AbstractStage {
     public abstract StageType getType();
     public abstract List<StageActivityType> getSubStages();
     public abstract List<StageType> getAllowedPredecessors();
-
-    //probably this does not belong here
-    public abstract boolean canPause();
 }

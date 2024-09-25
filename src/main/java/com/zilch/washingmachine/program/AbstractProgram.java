@@ -1,6 +1,7 @@
 package com.zilch.washingmachine.program;
 
 import com.zilch.washingmachine.model.ProgramConfig;
+import com.zilch.washingmachine.program.stage.AbstractStage;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;

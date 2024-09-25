@@ -6,20 +6,22 @@ import com.zilch.washingmachine.model.ProgramConfig.ConfigType;
 import com.zilch.washingmachine.model.Stage;
 import com.zilch.washingmachine.model.StageActivity;
 import com.zilch.washingmachine.model.StageActivityType;
-import com.zilch.washingmachine.program.WashStage;
-import com.zilch.washingmachine.program.AbstractStage;
-import com.zilch.washingmachine.program.DrainStage;
 import com.zilch.washingmachine.program.LaundryFactory;
-import com.zilch.washingmachine.program.RinseStage;
-import com.zilch.washingmachine.program.SoakStage;
+import com.zilch.washingmachine.program.stage.AbstractStage;
+import com.zilch.washingmachine.program.stage.DrainStage;
+import com.zilch.washingmachine.program.stage.RinseStage;
+import com.zilch.washingmachine.program.stage.SoakStage;
+import com.zilch.washingmachine.program.stage.WashStage;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static com.zilch.washingmachine.model.StageActivityType.*;
+import static com.zilch.washingmachine.model.ProgramConfig.ConfigType.*;
 
 @Component
 public class StageProcessor {
@@ -48,15 +50,14 @@ public class StageProcessor {
     }
 
     // TODO improve utilizing config
-    private void handle(StageActivity subStage, Map<StageActivityType, Map<ConfigType, String>> config) {
+    private void handle(StageActivity subStage, ProgramConfig config) {
         switch (subStage.getType()) {
-            case StageActivityType.POUR_WATER -> deviceFacade.pourWater();
-            case StageActivityType.HEAT_UP -> deviceFacade.heatUp(Double.parseDouble(config.get(StageActivityType.HEAT_UP).get(ConfigType.TEMPERATURE)));
-            case StageActivityType.SPIN -> deviceFacade.spin(Duration.ofSeconds(Long.parseLong(config.get(StageActivityType.SPIN).get(ConfigType.DURATION))));
-            case StageActivityType.IDLE -> deviceFacade.idle(Duration.ofSeconds(Long.parseLong(config.get(
-                    StageActivityType.IDLE).get(ConfigType.DURATION))));
-            case StageActivityType.PUMP -> deviceFacade.pump();
-            case StageActivityType.FULL_STOP -> deviceFacade.fullStop();
+            case POUR_WATER -> deviceFacade.pourWater();
+            case HEAT_UP -> deviceFacade.heatUp(Double.parseDouble(config.getValue(HEAT_UP, TEMPERATURE)));
+            case SPIN -> deviceFacade.spin(Duration.ofSeconds(Long.parseLong(config.getValue(SPIN, DURATION))));
+            case IDLE -> deviceFacade.idle(Duration.ofSeconds(Long.parseLong(config.getValue(IDLE, DURATION))));
+            case PUMP -> deviceFacade.pump();
+            case FULL_STOP -> deviceFacade.fullStop();
             default -> throw new IllegalArgumentException("unknown sub stage");
         }
     }
@@ -65,7 +66,7 @@ public class StageProcessor {
         Stage stage = soakStage.getStage();
         StageActivity activityToHandle = null;
 
-        if (isSubStageTypeOf(stage, StageActivityType.POUR_WATER)) {
+        if (isSubStageTypeOf(stage, POUR_WATER)) {
             if (deviceFacade.isWaterFull()) {
                 stage.getActivity().setFinishedAt(clock.instant());
                 activityToHandle = findNextActivity(soakStage);
@@ -74,8 +75,8 @@ public class StageProcessor {
             } else {
                 activityToHandle = stage.getActivity();
             }
-        } else if (isSubStageTypeOf(stage, StageActivityType.IDLE)) {
-            Duration duration = Duration.ofSeconds(Long.parseLong(config.getSubStageConfig().get(StageActivityType.IDLE).get(ConfigType.DURATION)));
+        } else if (isSubStageTypeOf(stage, IDLE)) {
+            Duration duration = Duration.ofSeconds(Long.parseLong(config.getValue(IDLE, DURATION)));
             if (hasTimeElapsed(stage.getActivity(), duration)) {
                 Instant finishedAt = clock.instant();
                 stage.getActivity().setFinishedAt(finishedAt);
@@ -84,7 +85,7 @@ public class StageProcessor {
         }
 
         if (activityToHandle != null) {
-            handle(activityToHandle, config.getSubStageConfig());
+            handle(activityToHandle, config);
         }
     }
 

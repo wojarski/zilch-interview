@@ -1,4 +1,4 @@
-package com.zilch.washingmachine.program;
+package com.zilch.washingmachine.program.stage;
 
 import com.zilch.washingmachine.model.StageActivityType;
 import com.zilch.washingmachine.model.StageType;
@@ -6,31 +6,23 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @AllArgsConstructor
 @Builder
-@Slf4j
-public class SoakStage extends AbstractStage {
+public class RinseStage extends AbstractStage {
     @Override
     public StageType getType() {
-        return StageType.SOAK;
+        return StageType.RINSE;
     }
 
     @Override
     public List<StageActivityType> getSubStages() {
-        return List.of(StageActivityType.POUR_WATER, StageActivityType.IDLE);
+        return null;
     }
 
     @Override
     public List<StageType> getAllowedPredecessors() {
-        return List.of();
+        return List.of(StageType.SOAK, StageType.WASH);
     }
-
-    @Override
-    public boolean canPause() {
-        return false;
-    }
-
 }

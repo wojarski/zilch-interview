@@ -1,4 +1,4 @@
-package com.zilch.washingmachine.program;
+package com.zilch.washingmachine.program.stage;
 
 import com.zilch.washingmachine.model.StageActivityType;
 import com.zilch.washingmachine.model.StageType;
@@ -24,11 +24,6 @@ public class DrainStage extends AbstractStage {
     @Override
     public List<StageType> getAllowedPredecessors() {
         return List.of(StageType.SOAK, StageType.WASH);
-    }
-
-    @Override
-    public boolean canPause() {
-        return false;
     }
 
 }

@@ -8,21 +8,25 @@ import com.zilch.washingmachine.program.AbstractProgram;
 import com.zilch.washingmachine.program.ECOProgram;
 import com.zilch.washingmachine.program.LaundryFactory;
 import com.zilch.washingmachine.program.QuickProgram;
+import java.util.List;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
+@Controller
+@Slf4j
 public class LaundryEndpointImpl implements LaundryEndpoint {
     @Autowired
     private LaundryFactory programFactory;
     @Autowired
-    private LaundryService laundryRunner;
+    private LaundryService laundryService;
 
     @Override
     public UUID runQuickLaundry() {
         QuickProgram program = QuickProgram.builder().build();
 
-        // TODO user config comes from 'somewhere'
-        ProgramConfig userConfig = ProgramConfig.builder().build();
+        ProgramConfig userConfig = LaundryFactory.getDefaultUserConfig();
         return runLaundry(program, userConfig);
     }
 
@@ -30,14 +34,18 @@ public class LaundryEndpointImpl implements LaundryEndpoint {
     public UUID runECOLaundry() {
         ECOProgram program = ECOProgram.builder().build();
 
-        // TODO user config comes from 'somewhere'
-        ProgramConfig userConfig = ProgramConfig.builder().build();
+        ProgramConfig userConfig = LaundryFactory.getDefaultUserConfig();
         return runLaundry(program, userConfig);
+    }
+
+    @Override
+    public List<Laundry> getAllLaundries() {
+        return laundryService.listAllLaundries();
     }
 
     private UUID runLaundry(AbstractProgram program, ProgramConfig userConfig) {
         Laundry laundry = programFactory.newLaundry(program, userConfig);
-        Operation operation = laundryRunner.startNewLaundry(laundry);
+        Operation operation = laundryService.startNewLaundry(laundry);
 
         return operation.getLaundryId();
     }
