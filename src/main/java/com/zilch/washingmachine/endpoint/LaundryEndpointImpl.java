@@ -18,7 +18,7 @@ import org.springframework.stereotype.Controller;
 @Slf4j
 public class LaundryEndpointImpl implements LaundryEndpoint {
     @Autowired
-    private LaundryFactory programFactory;
+    private LaundryFactory laundryFactory;
     @Autowired
     private LaundryService laundryService;
 
@@ -44,7 +44,7 @@ public class LaundryEndpointImpl implements LaundryEndpoint {
     }
 
     private UUID runLaundry(AbstractProgram program, ProgramConfig userConfig) {
-        Laundry laundry = programFactory.newLaundry(program, userConfig);
+        Laundry laundry = laundryFactory.newLaundry(program, userConfig);
         Operation operation = laundryService.startNewLaundry(laundry);
 
         return operation.getLaundryId();
