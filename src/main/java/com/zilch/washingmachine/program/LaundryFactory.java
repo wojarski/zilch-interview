@@ -36,13 +36,13 @@ public class LaundryFactory {
     }
 
     public Stage newStage(AbstractStage stage, UUID laundryId) {
-        StageActivityType subStageType = stage.getActivities().getFirst();
+        StageActivityType activityType = stage.getActivities().getFirst();
         UUID stageId = UUID.randomUUID();
         return Stage.builder()
                 .id(stageId)
                 .laundryId(laundryId)
                 .type(stage.getType())
-                .activity(newStageActivity(subStageType, stageId))
+                .activity(newStageActivity(activityType, stageId))
                 .processedActivities(new ArrayList<>())
                 .build();
     }
@@ -62,7 +62,9 @@ public class LaundryFactory {
             if (userConfig.getStageConfig().get(stageType) != null) {
                 config.merge(stageType, userConfig.getStageConfig().get(stageType), (defaultStageConfig, userStageConfig) -> {
                     defaultStageConfig.keySet().forEach(configType -> {
-                        defaultStageConfig.merge(configType, userStageConfig.get(configType), (defaultConfigValue, userConfigValue) -> defaultConfigValue);
+                        if (userStageConfig.get(configType) != null) {
+                            defaultStageConfig.merge(configType, userStageConfig.get(configType), (defaultConfigValue, userConfigValue) -> userConfigValue);
+                        }
                     });
                     return defaultStageConfig;
                 });

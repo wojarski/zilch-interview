@@ -4,9 +4,7 @@ import com.zilch.washingmachine.impl.EventPublisher;
 import com.zilch.washingmachine.model.DeviceEvent;
 import com.zilch.washingmachine.model.DeviceEventType;
 import com.zilch.washingmachine.persistence.model.DeviceState;
-import java.time.Clock;
 import java.time.Duration;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +15,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class DeviceFacadeImpl implements DeviceFacade {
     @Autowired
-    Clock clock;
+    private DeviceConnector deviceConnector;
 
     @Autowired
-    DeviceConnector deviceConnector;
+    private EventPublisher eventPublisher;
 
     @Autowired
-    EventPublisher eventPublisher;
-
-    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+    private ScheduledExecutorService scheduler;
 
     @Override
     public void pourWater() {
@@ -66,7 +62,6 @@ public class DeviceFacadeImpl implements DeviceFacade {
 
     @Override
     public void fullStop() {
-
     }
 
     private void stopSpin() {
