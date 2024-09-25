@@ -1,23 +1,22 @@
 package com.zilch.washingmachine.program;
 
+import static com.zilch.washingmachine.model.ProgramConfig.ConfigType.MAX_DURATION;
+import static com.zilch.washingmachine.model.ProgramConfig.ConfigType.REPEATS;
+import static com.zilch.washingmachine.model.ProgramConfig.ConfigType.TEMPERATURE;
+
 import com.zilch.washingmachine.model.ProgramConfig;
-import com.zilch.washingmachine.model.ProgramConfig.ConfigType;
-import com.zilch.washingmachine.model.StageType;
 import com.zilch.washingmachine.model.StageActivityType;
+import com.zilch.washingmachine.model.StageType;
 import com.zilch.washingmachine.program.stage.AbstractStage;
 import com.zilch.washingmachine.program.stage.DrainStage;
 import com.zilch.washingmachine.program.stage.RinseStage;
 import com.zilch.washingmachine.program.stage.WashStage;
-import java.io.ObjectInputFilter.Config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import static com.zilch.washingmachine.model.ProgramConfig.ConfigType.*;
-import static com.zilch.washingmachine.model.StageActivityType.*;
 
 @Builder
 @Setter

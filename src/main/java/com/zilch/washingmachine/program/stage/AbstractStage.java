@@ -1,12 +1,10 @@
 package com.zilch.washingmachine.program.stage;
 
 import com.zilch.washingmachine.model.ProgramConfig;
-import com.zilch.washingmachine.model.ProgramConfig.ConfigType;
 import com.zilch.washingmachine.model.Stage;
-import com.zilch.washingmachine.model.StageType;
 import com.zilch.washingmachine.model.StageActivityType;
+import com.zilch.washingmachine.model.StageType;
 import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

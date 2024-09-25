@@ -5,17 +5,14 @@ import static com.zilch.washingmachine.model.StageActivityType.IDLE;
 import static com.zilch.washingmachine.model.StageActivityType.SPIN;
 
 import com.zilch.washingmachine.model.ProgramConfig;
-import com.zilch.washingmachine.model.ProgramConfig.ConfigType;
 import com.zilch.washingmachine.model.StageActivityType;
 import com.zilch.washingmachine.model.StageType;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Builder

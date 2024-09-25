@@ -2,6 +2,7 @@ package com.zilch.washingmachine.device;
 
 import java.time.Duration;
 
+@SuppressWarnings("unused")
 public interface DeviceFacade {
     void pourWater();
 

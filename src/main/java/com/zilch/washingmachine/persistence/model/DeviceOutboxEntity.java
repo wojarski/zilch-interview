@@ -3,7 +3,6 @@ package com.zilch.washingmachine.persistence.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
-import jakarta.persistence.PostPersist;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,10 +1,8 @@
 package com.zilch.washingmachine.model;
 
-import jakarta.persistence.Id;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

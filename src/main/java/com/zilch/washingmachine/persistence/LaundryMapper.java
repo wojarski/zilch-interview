@@ -2,11 +2,8 @@ package com.zilch.washingmachine.persistence;
 
 import com.zilch.washingmachine.model.Laundry;
 import com.zilch.washingmachine.persistence.model.LaundryEntity;
-import org.aspectj.lang.annotation.After;
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(uses = StageMapper.class)
